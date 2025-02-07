@@ -15,7 +15,6 @@ const languages = [
     ["Node.js", "text-green-500", "nodejs", "30"],
     ["Express.js", "text-gray-300", "express.png", "30"],
     ["Next.js", "text-white", "nextjs2", "30"],
-    ["Three.js", "text-white", "threejs.png", "30"]
 ];
 
 const databases = [
