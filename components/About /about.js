@@ -1,32 +1,26 @@
-import { Roboto_Mono } from 'next/font/google'
- 
-const roboto = Roboto_Mono({
-  weight: '400',
-  subsets: ['latin'],
-})
+import ClickableImage from '../Helpers/Button';
 
+
+const links = [
+    ["https://www.linkedin.com/in/vageesh-jayaraman/", "/about_me/linkedin.png"],
+    ["https://github.com/Vageesh-Jayaraman", "/tech_stack_icons/github.png"],
+
+]
 
 export default function About() {
-    const points = [
-        "Third-year Computer Science student (so of course, I love coding).",
-        "Loves learning and building stuff.",
-        "Trust me, if I don't know, I'll learn it somehow.",
-        "Learning web development through the repetitive cycle of failing and succeeding.",
-        "Always eager to contribute to a social cause."
-    ];
+    const description = "Hey, I'm Vageesh! (Yep, you can see it up there 😃) I'm a third-year Computer Science student at VIT Chennai who loves coding and building cool stuff. Tech moves crazy fast, so I’m always trying to keep up. I learn best by trial and error—if I don’t know something, I’ll figure it out. Spent way too long stuck in tutorial hell, so now I’m all about hands-on projects. I also love using tech for a good cause.";
 
     return (
-        <div className={`m-10 w-3/4 border-2 border-gray-500 ${roboto.className} text-sm`}>
-            <ul className="p-4 space-y-4 ">
-                {points.map((point, index) => (
-                    <li 
-                        key={index} 
-                        className="border-2 border-gray-500 p-2 cursor-pointer 
-                                   hover:bg-yellow-300/50 transition-all">
-                        {point}
-                    </li>
+        <div className={`m-10  w-3/4 border-2 border-gray-500 font-mono text-sm p-4`}> 
+            <p className="p-2 text-base">{description}</p>
+            <p className="p-2 mt-10 text-base font-semibold">Wanna know more about me?</p>
+            <div className="p-2 flex space-x-4 gap-4">
+                {links.map(([link, path], index) => (
+                <ClickableImage key={index} link={link} path={path} />
                 ))}
-            </ul>
+            </div>
+            <p className="text-yellow-400">(oops! I'm not on insta and X)</p>
         </div>
     );
 }
+

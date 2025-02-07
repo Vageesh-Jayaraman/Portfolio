@@ -6,7 +6,7 @@ export default function Box({ text, text_color, logo, logo_size }) {
             <p className={`text-sm font-mono font-semibold ${text_color}`}>{text}</p>
             {logo?.endsWith(".png") ? (
                 <img 
-                    src={`/tech_stack_icons/${logo}`} 
+                    src={`../tech_stack_icons/${logo}`} 
                     alt={text} 
                     style={{ width: `${logo_size}px`, height: `${logo_size}px` }} 
                 />

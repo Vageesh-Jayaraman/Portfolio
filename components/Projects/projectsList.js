@@ -22,7 +22,7 @@ const projectList = [
     { 
         "title": "Quote Generation API",
         "description":"Effortlessly generate quotes via our public, no-sign-in API. Perfect for developers needing inspirational, humorous, or motivational content.",
-        "website":"quote-api-drab-ten.vercel.app",
+        "website":"https://quote-api-drab-ten.vercel.app",
         "github":"https://github.com/Vageesh-Jayaraman/Quote-API",
         "download":"",
         "tech":["mongoDB", "node.js", "express.js"],
