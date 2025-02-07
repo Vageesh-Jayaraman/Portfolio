@@ -6,6 +6,7 @@ import Header from '@/components/header';
 import NavBar from '@/components/navbar';
 import TechStack from '@/components/Tech_Stack/techStack';
 import Project from '@/components/Projects/project';
+import Clap from '@/components/likeButton';
 
 export default function Home() {
   const [selectedComponent, setSelectedComponent] = useState('Project');
@@ -25,7 +26,11 @@ export default function Home() {
 
   return (
     <div>
-      <Header />
+      <div>
+      <Header/>
+      <Clap/>
+      </div>
+      
       <div className="flex flex-row space-x-10">
         <NavBar setSelectedComponent={setSelectedComponent} />
         {renderComponent()}
