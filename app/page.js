@@ -15,7 +15,7 @@ export default function Home() {
     switch (selectedComponent) {
       case 'About Me':
         return <About />;
-      case 'My Stack':
+      case "Tools I've Used":
         return <TechStack />;
       case 'Projects':
         return <Project />;

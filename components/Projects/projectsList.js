@@ -10,6 +10,16 @@ const projectList = [
     },
 
     { 
+        "title": "Quote API",
+        "description":"Instantly access quotes with a public, no-sign-in API. Covering motivation, fitness, relationships, affirmations and positivity, all in one place!",
+        "website":"https://quote-api-reloaded.vercel.app",
+        "github":"https://github.com/Vageesh-Jayaraman/Quote-API-Reloaded",
+        "download":"",
+        "tech":["next.js", "mongoDB", "redis"],
+        "imageSrc":"/project_icons/quote.png"
+    },
+
+    { 
         "title": "AuraWeather",
         "description":"Android app that delivers accurate weather forecasts and live 3D Earth visualizations of global wind, weather, and ocean conditions.",
         "download": "https://drive.google.com/file/d/1r-aR3V3a6em2hf6Mp8WzTFsJs6QPi17s/view",
@@ -19,15 +29,7 @@ const projectList = [
         "imageSrc":"/project_icons/auraweather.png"
     },
 
-    { 
-        "title": "Quote Generation API",
-        "description":"Effortlessly generate quotes via our public, no-sign-in API. Perfect for developers needing inspirational, humorous, or motivational content.",
-        "website":"https://quote-api-drab-ten.vercel.app",
-        "github":"https://github.com/Vageesh-Jayaraman/Quote-API",
-        "download":"",
-        "tech":["mongoDB", "node.js", "express.js"],
-        "imageSrc":"/project_icons/quote.avif"
-    },
+    
 
     { 
         "title": "Smart Aquatic Nutrient Dispensing System",
