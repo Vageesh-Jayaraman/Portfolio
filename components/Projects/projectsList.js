@@ -20,6 +20,16 @@ const projectList = [
         "imageSrc":"/project_icons/quote.png"
     },
 
+    {
+        "title": "Radius",
+        "description": "A simple and secure real-time team location tracking app built with Flutter and Firebase. Designed for groups that need to stay connected on the move.",
+        "website": "",
+        "github": "https://github.com/Vageesh-Jayaraman/radius",
+        "download": "https://drive.google.com/file/d/1pq1FHvsTyO1dMVTtdSAFsKmGPYywsPVE/view?usp=sharing",
+        "tech": ["flutter", "firebase"],
+        "imageSrc": "/project_icons/radius.png"
+    },
+    
     { 
         "title": "AuraWeather",
         "description":"Android app that delivers accurate weather forecasts and live 3D Earth visualizations of global wind, weather, and ocean conditions.",
@@ -28,16 +38,6 @@ const projectList = [
         "website":"",
         "tech":["flutter", "OpenWeatherMap API", "WebView"],
         "imageSrc":"/project_icons/auraweather.png"
-    },
-
-    { 
-        "title": "Smart Aquatic Nutrient Dispensing System",
-        "description":"Automate fish feeding with a smart nutrient dispensing system using NodeMCU, sensors, and a servo motor (Design patented).",
-        "website":"",
-        "github":"https://github.com/Vageesh-Jayaraman/Smart-Aquatic-Nutrient-Dispensing-System",
-        "download":"",
-        "tech":["arduino", "Blynk IoT"],
-        "imageSrc":"/project_icons/aquatic.jpg"
     },
 
 
@@ -59,6 +59,16 @@ const projectList = [
         "download":"",
         "tech":["tensorflow", "mediapipe", "open-cv"],
         "imageSrc":"/project_icons/gaze_estimation.png"
+    },
+
+    { 
+        "title": "Smart Aquatic Nutrient Dispensing System",
+        "description":"Automate fish feeding with a smart nutrient dispensing system using NodeMCU, sensors, and a servo motor (Design patented).",
+        "website":"",
+        "github":"https://github.com/Vageesh-Jayaraman/Smart-Aquatic-Nutrient-Dispensing-System",
+        "download":"",
+        "tech":["arduino", "Blynk IoT"],
+        "imageSrc":"/project_icons/aquatic.jpg"
     },
 
     

@@ -11,7 +11,7 @@ export default function About() {
         <div className="m-10 w-3/4 border-2 border-gray-500 font-mono text-sm p-4"> 
             <div className="p-2 text-base">
                 Hey, I'm <MyImage text={"Vageesh"} />!
-                (Yep, you can see it up there 😃) I'm a third-year Computer Science student at VIT Chennai who loves coding and building cool stuff. 
+                (Yep, you can see it up there 😃) I'm a final-year Computer Science student at VIT Chennai who loves coding and building cool stuff. 
                 Tech moves crazy fast, so I’m always trying to keep up. I learn best by trial and error—if I don’t know something, I’ll figure it out. 
                 Spent way too long stuck in tutorial hell, so now I’m all about hands-on projects. I also love using tech for a good cause.
             </div>
