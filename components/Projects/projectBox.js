@@ -17,7 +17,7 @@ export default function ProjectBox({ title, website, github, tech, download, ima
                 <img
                     src={imageSrc}
                     alt={title}
-                    className="h-full object-cover rounded-md"
+                    className="h-full object-cover rounded-md border-2 border-gray-700"
                 />
             </div>
 
