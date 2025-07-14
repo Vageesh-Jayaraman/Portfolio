@@ -1,7 +1,8 @@
 export default function NavBar({ setSelectedComponent }) {
   return (
-    <nav className="ml-20 mt-10 h-60 font-bold opacity-90 w-40">
-      <ul className="flex flex-col space-y-3 text-sm font-mono">
+    <nav className="mt-6  md:w-40 font-bold opacity-90">
+      <ul className="flex flex-row md:flex-col flex-nowrap space-x-3 md:space-x-0 md:space-y-3 text-sm font-mono overflow-x-auto">
+
         {['About Me', "Tools I've Used", 'Projects'].map((item) => (
           <li
             key={item}
