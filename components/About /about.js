@@ -4,6 +4,7 @@ import ClickableImage from "../Helpers/Button";
 const links = [
     ["https://www.linkedin.com/in/vageesh-jayaraman/", "/about_me/linkedin.png"],
     ["https://github.com/Vageesh-Jayaraman", "/tech_stack_icons/github.png"],
+    ["https://www.instagram.com/myselfvags/", "/about_me/Instagram_icon.png.webp"],
 ];
 
 export default function About() {
@@ -25,7 +26,6 @@ export default function About() {
                 ))}
             </div>
 
-            <p className="text-yellow-400">(oops! I'm not on Insta and X)</p>
         </div>
     );
 }
