@@ -6,6 +6,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes button-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 167, 31, 0.2), 0 0 15px rgba(255, 167, 31, 0.1); }
+  50% { box-shadow: 0 0 12px rgba(255, 167, 31, 0.4), 0 0 25px rgba(255, 167, 31, 0.2); }
+}
+
+.gradient-border {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background: linear-gradient(#0a0a0a, #0a0a0a) padding-box, 
+              linear-gradient(90deg, #ffa71f, #ffed51, #ffa71f, #ffed51) border-box;
+  background-size: 200% 200%;
+  animation: gradient-flow 1.5s linear infinite, button-glow 2s ease-in-out infinite;
+}
+
 @layer base {
   :root {
     --background: 240 10% 3.9%; 
