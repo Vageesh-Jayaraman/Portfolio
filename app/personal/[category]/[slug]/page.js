@@ -1,7 +1,4 @@
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
 import { getPost, getCategories, getPostsByCategory } from '@/lib/blogs';
 
 export const dynamic = 'force-dynamic';
@@ -58,22 +55,151 @@ export default async function BlogPost({ params }) {
 
   const style = getCatColor(category);
 
-  const imageBaseUrl = `/api/blog-image/${category}/${slug}`;
-
-  const transformImageUrl = (src) => {
-    if (!src) return src;
-    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
-      return src;
+  const htmlStyles = `
+    article {
+      font-size: 1.125rem;
+      line-height: 1.75;
     }
-    return `${imageBaseUrl}/${src}`;
-  };
-
-  const ImageComponent = ({ src, alt, ...props }) => (
-    <img src={transformImageUrl(src)} alt={alt} {...props} />
-  );
+    article h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      font-family: monospace;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #f4f4f5;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+    article h2 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      font-family: monospace;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #f4f4f5;
+      line-height: 1.2;
+    }
+    article h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: monospace;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #f4f4f5;
+      line-height: 1.2;
+    }
+    article p {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      color: #a1a1a1;
+      line-height: 1.75;
+      font-family: monospace;
+      font-size: 1.125rem;
+    }
+    article code {
+      background-color: #27272a;
+      color: #fbbf24;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+      font-family: monospace;
+    }
+    article pre {
+      background-color: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+    }
+    article pre code {
+      background-color: transparent;
+      color: #d4d4d8;
+      padding: 0;
+      font-size: 0.95rem;
+    }
+    article strong {
+      font-weight: 700;
+      color: #f4f4f5;
+    }
+    article em {
+      font-style: italic;
+      color: #d4d4d8;
+    }
+    article ul {
+      list-style-type: disc;
+      margin-left: 1.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      color: #a1a1a1;
+      font-family: monospace;
+      font-size: 1.125rem;
+    }
+    article ol {
+      list-style-type: decimal;
+      margin-left: 1.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      color: #a1a1a1;
+      font-family: monospace;
+      font-size: 1.125rem;
+    }
+    article li {
+      color: #a1a1a1;
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+    }
+    article blockquote {
+      border-left: 4px solid #fbbf24;
+      padding-left: 1rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+      color: #71717a;
+      font-size: 1.125rem;
+      font-family: monospace;
+    }
+    article table {
+      width: 100%;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border-collapse: collapse;
+      font-size: 1.125rem;
+    }
+    article th,
+    article td {
+      border: 1px solid #27272a;
+      padding: 1rem;
+      color: #a1a1a1;
+      font-family: monospace;
+    }
+    article th {
+      background-color: #27272a;
+      font-weight: 700;
+      color: #f4f4f5;
+    }
+    article a {
+      color: #fbbf24;
+      text-decoration: none;
+    }
+    article a:hover {
+      text-decoration: underline;
+    }
+    article img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+    }
+  `;
 
   return (
     <div className="min-h-screen px-4 md:px-20 py-8 max-w-4xl mx-auto">
+      <style>{htmlStyles}</style>
       <Link
         href="/personal"
         className="inline-flex items-center gap-2 mb-8 text-zinc-500 hover:text-white font-mono text-sm transition-colors"
@@ -101,15 +227,7 @@ export default async function BlogPost({ params }) {
         {post.description}
       </p>
       
-      <article className="prose prose-invert prose-lg max-w-none prose-headings:font-mono prose-p:font-mono prose-a:text-zinc-300 prose-a:no-underline hover:prose-a:text-white prose-code:text-zinc-300 prose-code:bg-zinc-800 prose-code:px-1 prose-code:rounded prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-800">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight]}
-          components={{ img: ImageComponent }}
-        >
-          {post.content}
-        </ReactMarkdown>
-      </article>
+      <article dangerouslySetInnerHTML={{ __html: post.content }} />
     </div>
   );
 }

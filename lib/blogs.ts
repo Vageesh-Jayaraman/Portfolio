@@ -1,9 +1,16 @@
 import matter from 'gray-matter';
+import fs from 'fs';
+import path from 'path';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
+import remarkGfm from 'remark-gfm';
 
 const GITHUB_REPO = process.env.BLOGS_REPO;
 const GITHUB_TOKEN = process.env.BLOGS_TOKEN;
 const GITHUB_BRANCH = process.env.BLOGS_BRANCH || 'main';
-const CACHE_TTL = parseInt(process.env.BLOG_CACHE_TTL || '60000'); // Default: 1 minute (in milliseconds)
+const LOCAL_BLOGS_PATH = process.env.LOCAL_BLOGS_PATH;
+const USE_LOCAL = process.env.USE_LOCAL_BLOGS;
+const CACHE_TTL = parseInt(process.env.BLOG_CACHE_TTL || '60000');
 
 async function fetchFromGitHub(path: string): Promise<string> {
   if (!GITHUB_REPO || !GITHUB_TOKEN) {
@@ -32,6 +39,42 @@ async function fetchFromGitHub(path: string): Promise<string> {
   }
   
   return '';
+}
+
+async function fetchFromLocal(filePath: string): Promise<string> {
+  const fullPath = path.join(LOCAL_BLOGS_PATH, filePath);
+  
+  console.log(`Fetching from local: ${fullPath}`);
+  
+  try {
+    const content = fs.readFileSync(fullPath, 'utf-8');
+    return content;
+  } catch (error) {
+    throw new Error(`Failed to fetch local file ${fullPath}: ${error}`);
+  }
+}
+
+async function fetchBlogFile(filePath: string): Promise<string> {
+  if (USE_LOCAL) {
+    return fetchFromLocal(filePath);
+  }
+  return fetchFromGitHub(filePath);
+}
+
+async function processMarkdownToHtml(markdown: string): Promise<string> {
+  const processedContent = await remark()
+    .use(remarkGfm)
+    .use(remarkHtml)
+    .process(markdown);
+  
+  return processedContent.toString();
+}
+
+function rewriteImageUrls(html: string, category: string, slug: string): string {
+  return html.replace(
+    /<img([^>]*?)src="(?!https?:\/\/)([^"]+)"([^>]*)>/g,
+    `<img$1src="/api/blog-image/${category}/${slug}/$2"$3>`
+  );
 }
 
 export interface BlogPost {
@@ -66,7 +109,6 @@ function isCacheExpired(cacheTime: number): boolean {
   return expired;
 }
 
-// Manual cache invalidation function (useful for webhooks)
 export function invalidateCache(category?: string): void {
   if (category) {
     postsCache.delete(category);
@@ -86,6 +128,24 @@ export function invalidateCache(category?: string): void {
 export async function getCategories(): Promise<string[]> {
   if (categoriesCache && !isCacheExpired(categoriesCacheTime)) {
     return categoriesCache;
+  }
+  
+  if (USE_LOCAL) {
+    try {
+      const categories = fs.readdirSync(LOCAL_BLOGS_PATH)
+        .filter(file => {
+          const fullPath = path.join(LOCAL_BLOGS_PATH, file);
+          return fs.statSync(fullPath).isDirectory() && !file.startsWith('.');
+        })
+        .sort();
+      
+      categoriesCache = categories;
+      categoriesCacheTime = Date.now();
+      return categories;
+    } catch (error) {
+      console.error('Error reading local categories:', error);
+      return [];
+    }
   }
   
   if (!GITHUB_REPO || !GITHUB_TOKEN) {
@@ -118,6 +178,54 @@ export async function getPostsByCategory(category: string): Promise<BlogPost[]> 
     return postsCache.get(category)!;
   }
   
+  if (USE_LOCAL) {
+    try {
+      const categoryPath = path.join(LOCAL_BLOGS_PATH, category);
+      
+      if (!fs.existsSync(categoryPath)) {
+        return [];
+      }
+      
+      const slugs = fs.readdirSync(categoryPath)
+        .filter(file => {
+          const fullPath = path.join(categoryPath, file);
+          return fs.statSync(fullPath).isDirectory();
+        });
+      
+      const posts = await Promise.all(
+        slugs.map(async (slug) => {
+          try {
+            const content = fs.readFileSync(path.join(categoryPath, slug, 'index.md'), 'utf-8');
+            const { data, content: body } = matter(content);
+            let htmlContent = await processMarkdownToHtml(body);
+            htmlContent = rewriteImageUrls(htmlContent, category, slug);
+            
+            return {
+              slug,
+              category,
+              title: data.title || 'Untitled',
+              description: data.description || '',
+              date: formatDate(data.date || data.pubDate),
+              content: htmlContent,
+            };
+          } catch {
+            return null;
+          }
+        })
+      );
+      
+      const result = posts.filter((p): p is BlogPost => p !== null)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      
+      postsCache.set(category, result);
+      postsCacheTime.set(category, Date.now());
+      return result;
+    } catch (error) {
+      console.error(`Error reading local blogs in category ${category}:`, error);
+      return [];
+    }
+  }
+  
   if (!GITHUB_REPO || !GITHUB_TOKEN) {
     return [];
   }
@@ -142,6 +250,8 @@ export async function getPostsByCategory(category: string): Promise<BlogPost[]> 
         try {
           const content = await fetchFromGitHub(`${category}/${folder.name}/index.md`);
           const { data, content: body } = matter(content);
+          let htmlContent = await processMarkdownToHtml(body);
+          htmlContent = rewriteImageUrls(htmlContent, category, folder.name);
           
           return {
             slug: folder.name,
@@ -149,7 +259,7 @@ export async function getPostsByCategory(category: string): Promise<BlogPost[]> 
             title: data.title || 'Untitled',
             description: data.description || '',
             date: formatDate(data.date || data.pubDate),
-            content: body,
+            content: htmlContent,
           };
         } catch {
           return null;
@@ -194,6 +304,38 @@ export async function getPost(category: string, slug: string): Promise<BlogPost 
     return postCache.get(cacheKey)!;
   }
   
+  if (USE_LOCAL) {
+    try {
+      const filePath = path.join(LOCAL_BLOGS_PATH, category, slug, 'index.md');
+      
+      if (!fs.existsSync(filePath)) {
+        return null;
+      }
+      
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const { data, content: body } = matter(content);
+      let htmlContent = await processMarkdownToHtml(body);
+      htmlContent = rewriteImageUrls(htmlContent, category, slug);
+      
+      const post = {
+        slug,
+        category,
+        title: data.title || 'Untitled',
+        description: data.description || '',
+        date: formatDate(data.date || data.pubDate),
+        content: htmlContent,
+      };
+      
+      postCache.set(cacheKey, post);
+      postCacheTime.set(cacheKey, Date.now());
+      
+      return post;
+    } catch (error) {
+      console.error(`Error reading local post ${category}/${slug}:`, error);
+      return null;
+    }
+  }
+  
   if (!GITHUB_REPO || !GITHUB_TOKEN) {
     return null;
   }
@@ -201,6 +343,8 @@ export async function getPost(category: string, slug: string): Promise<BlogPost 
   try {
     const content = await fetchFromGitHub(`${category}/${slug}/index.md`);
     const { data, content: body } = matter(content);
+    let htmlContent = await processMarkdownToHtml(body);
+    htmlContent = rewriteImageUrls(htmlContent, category, slug);
     
     const post = {
       slug,
@@ -208,7 +352,7 @@ export async function getPost(category: string, slug: string): Promise<BlogPost 
       title: data.title || 'Untitled',
       description: data.description || '',
       date: formatDate(data.date || data.pubDate),
-      content: body,
+      content: htmlContent,
     };
     
     postCache.set(cacheKey, post);
